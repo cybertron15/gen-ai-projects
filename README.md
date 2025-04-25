@@ -10,5 +10,26 @@ I will be using [UV ](https://docs.astral.sh/uv/)for package management in this 
 pip install uv
 ```
 
-if you dont have pip you can check other methods of installation [here](https://docs.astral.sh/uv/getting-started/installation/)
+if you dont have pip you can check other methods of installation [here
+](https://docs.astral.sh/uv/getting-started/installation/)
 
+[
+](https://docs.astral.sh/uv/getting-started/installation/)
+
+
+## Update dependencies
+
+Run the following command insdie the project directory to download/update all the required dependencies
+
+```bash
+uv sync
+```
+
+
+## Run code
+
+to run the code use the following command in the project directory.
+
+```bash
+uv sync ./main.py
+```
