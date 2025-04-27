@@ -5,8 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-
-model = "gemini-2.5-pro-exp-03-25"
+model = os.getenv("GEMINI_MODEL")
 
 
 def generate_gemini_response(prompt, stream=True):
