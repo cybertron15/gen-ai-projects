@@ -13,7 +13,7 @@ importers:
         version: 1.2.12(react@19.1.0)(zod@3.24.4)
       '@langchain/community':
         specifier: ^0.3.42
-        version: 0.3.42(@browserbasehq/sdk@2.5.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.52.0)(deepmerge@4.3.1)(dotenv@16.5.0)(openai@4.98.0(ws@8.18.2)(zod@3.24.4))(zod@3.24.4))(@ibm-cloud/watsonx-ai@1.6.5)(@langchain/core@0.3.55(openai@4.98.0(ws@8.18.2)(zod@3.24.4)))(@qdrant/js-client-rest@1.14.0(typescript@5.8.3))(axios@1.9.0)(ibm-cloud-sdk-core@5.3.2)(ignore@5.3.2)(ioredis@5.6.1)(jsonwebtoken@9.0.2)(openai@4.98.0(ws@8.18.2)(zod@3.24.4))(playwright@1.52.0)(ws@8.18.2)
+        version: 0.3.42(@browserbasehq/sdk@2.5.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.52.0)(deepmerge@4.3.1)(dotenv@16.5.0)(openai@4.98.0(ws@8.18.2)(zod@3.24.4))(zod@3.24.4))(@ibm-cloud/watsonx-ai@1.6.5)(@langchain/core@0.3.55(openai@4.98.0(ws@8.18.2)(zod@3.24.4)))(@qdrant/js-client-rest@1.14.0(typescript@5.8.3))(axios@1.9.0)(ibm-cloud-sdk-core@5.3.2)(ignore@5.3.2)(ioredis@5.6.1)(jsonwebtoken@9.0.2)(openai@4.98.0(ws@8.18.2)(zod@3.24.4))(pdf-parse@1.1.1)(playwright@1.52.0)(ws@8.18.2)
       '@langchain/core':
         specifier: ^0.3.55
         version: 0.3.55(openai@4.98.0(ws@8.18.2)(zod@3.24.4))
@@ -53,6 +53,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      dotenv:
+        specifier: ^16.5.0
+        version: 16.5.0
       lucide-react:
         specifier: ^0.508.0
         version: 0.508.0(react@19.1.0)
@@ -62,6 +65,9 @@ importers:
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      pdf-parse:
+        specifier: ^1.1.1
+        version: 1.1.1
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -2654,6 +2660,9 @@ packages:
     engines: {node: '>=10.5.0'}
     deprecated: Use your platform's native DOMException instead
 
+  node-ensure@0.0.0:
+    resolution: {integrity: sha512-DRI60hzo2oKN1ma0ckc6nQWlHU69RH6xN0sjQTjMpChPfTYvKZdcQFfdYK2RWbJcKyUizSIy/l8OTGxMAM1QDw==}
+
   node-fetch@2.7.0:
     resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
     engines: {node: 4.x || >=6.0.0}
@@ -2775,6 +2784,10 @@ packages:
   path-to-regexp@8.2.0:
     resolution: {integrity: sha512-TdrF7fW9Rphjq4RjrW0Kp2AW0Ahwu9sRGTkS6bvDi0SCwZlEZYmcfDbEsTz8RVk0EHIS/Vd1bv3JhG+1xZuAyQ==}
     engines: {node: '>=16'}
+
+  pdf-parse@1.1.1:
+    resolution: {integrity: sha512-v6ZJ/efsBpGrGGknjtq9J/oC8tZWq0KWL5vQrk2GlzLEQPUDB1ex+13Rmidl1neNN358Jn9EHZw5y07FFtaC7A==}
+    engines: {node: '>=6.8.1'}
 
   peek-readable@4.1.0:
     resolution: {integrity: sha512-ZI3LnwUv5nOGbQzD9c2iDG6toheuXSZP5esSHBjopsXH4dg19soufvpUGA3uohi5anFtGb2lhAVdHzH6R/Evvg==}
@@ -3601,7 +3614,7 @@ snapshots:
 
   '@ioredis/commands@1.2.0': {}
 
-  '@langchain/community@0.3.42(@browserbasehq/sdk@2.5.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.52.0)(deepmerge@4.3.1)(dotenv@16.5.0)(openai@4.98.0(ws@8.18.2)(zod@3.24.4))(zod@3.24.4))(@ibm-cloud/watsonx-ai@1.6.5)(@langchain/core@0.3.55(openai@4.98.0(ws@8.18.2)(zod@3.24.4)))(@qdrant/js-client-rest@1.14.0(typescript@5.8.3))(axios@1.9.0)(ibm-cloud-sdk-core@5.3.2)(ignore@5.3.2)(ioredis@5.6.1)(jsonwebtoken@9.0.2)(openai@4.98.0(ws@8.18.2)(zod@3.24.4))(playwright@1.52.0)(ws@8.18.2)':
+  '@langchain/community@0.3.42(@browserbasehq/sdk@2.5.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.52.0)(deepmerge@4.3.1)(dotenv@16.5.0)(openai@4.98.0(ws@8.18.2)(zod@3.24.4))(zod@3.24.4))(@ibm-cloud/watsonx-ai@1.6.5)(@langchain/core@0.3.55(openai@4.98.0(ws@8.18.2)(zod@3.24.4)))(@qdrant/js-client-rest@1.14.0(typescript@5.8.3))(axios@1.9.0)(ibm-cloud-sdk-core@5.3.2)(ignore@5.3.2)(ioredis@5.6.1)(jsonwebtoken@9.0.2)(openai@4.98.0(ws@8.18.2)(zod@3.24.4))(pdf-parse@1.1.1)(playwright@1.52.0)(ws@8.18.2)':
     dependencies:
       '@browserbasehq/stagehand': 1.14.0(@playwright/test@1.52.0)(deepmerge@4.3.1)(dotenv@16.5.0)(openai@4.98.0(ws@8.18.2)(zod@3.24.4))(zod@3.24.4)
       '@ibm-cloud/watsonx-ai': 1.6.5
@@ -3624,6 +3637,7 @@ snapshots:
       ignore: 5.3.2
       ioredis: 5.6.1
       jsonwebtoken: 9.0.2
+      pdf-parse: 1.1.1
       playwright: 1.52.0
       ws: 8.18.2
     transitivePeerDependencies:
@@ -5667,6 +5681,8 @@ snapshots:
 
   node-domexception@1.0.0: {}
 
+  node-ensure@0.0.0: {}
+
   node-fetch@2.7.0:
     dependencies:
       whatwg-url: 5.0.0
@@ -5795,6 +5811,13 @@ snapshots:
   path-parse@1.0.7: {}
 
   path-to-regexp@8.2.0: {}
+
+  pdf-parse@1.1.1:
+    dependencies:
+      debug: 3.2.7
+      node-ensure: 0.0.0
+    transitivePeerDependencies:
+      - supports-color
 
   peek-readable@4.1.0: {}
 

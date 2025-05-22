@@ -152,7 +152,6 @@ export default function PDFChat() {
 
 	}
 
-
 	const openFileDialog = () => setFileDialogOpen(true)
 	const closeFileDialog = () => setFileDialogOpen(false)
 
@@ -338,8 +337,8 @@ export default function PDFChat() {
 								size="icon"
 								disabled={
 									isLoading ||
-									// uploadedFiles.length === 0 ||
-									// uploadedFiles.filter((f) => f.selected).length === 0 ||
+									uploadedFiles.length === 0 ||
+									uploadedFiles.filter((f) => f.selected).length === 0 ||
 									!input.trim()
 								}
 								className="shrink-0 cursor-pointer"
