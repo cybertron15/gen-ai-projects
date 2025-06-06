@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PDF Chat
+
+A lightweight, developer-friendly PDF-based chatbot system powered by OpenAI, LangChain, Vercel Blob, Qdrant, and BullMQ.
+
+> **Made by [cybertron15](https://github.com/cybertron15)**
+
+## Features
+
+* Upload one or more PDF files
+* Select a file and chat over its contents
+* Uses RAG (Retrieval Augmented Generation) with LangChain
+* File storage via Vercel Blob
+* Vector store powered by Qdrant
+* Queue management using BullMQ with Valkey
+* Supports Docker-based local setup
+
+## Folder Structure
+
+This project lives inside the folder: `03-pdf-rag` of the [gen-ai-projects](https://github.com/cybertron15/gen-ai-projects) repository.
 
 ## Getting Started
 
-First, run the development server:
+### 1. Clone the Repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/cybertron15/gen-ai-projects.git
+cd gen-ai-projects/03-pdf-rag
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Docker Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This project uses Docker for running Valkey and Qdrant services locally. Below is the Docker Compose configuration:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```yaml
+docker-compose.yml
 
-## Learn More
+services:
+  valkey:
+    image: valkey/valkey
+    container_name: valkey
+    ports:
+      - "6379:6379"
 
-To learn more about Next.js, take a look at the following resources:
+  qdrantDB:
+    image: qdrant/qdrant
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### Run Docker
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+docker compose up -d
+```
 
-## Deploy on Vercel
+Ensure Docker Desktop (or engine) is running before executing the command.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 3. Install Dependencies
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+pnpm install
+```
+
+### 4. Set Environment Variables
+
+Create a `.env` file in the root directory with the following:
+
+```env
+BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
+OPENAI_API_KEY=sk-proj-...
+QDRANT_URL=http://localhost:6333
+```
+
+### 5. Setup Vercel Blob Store (From Dashboard)
+
+1. Go to [Vercel Blob Dashboard](https://vercel.com/storage/blob)
+2. If you don’t already have a Blob store, click **“Create”** to generate one
+3. Once the store is created, click on it to open the details
+4. Navigate to **Settings → Tokens**
+5. Click **“Generate Token”**
+6. Choose **Read & Write** access
+7. Copy the token and add it to your `.env` file:
+
+```env
+BLOB_READ_WRITE_TOKEN=your_generated_token
+```
+
+### 6. Start Services
+
+#### Start the file upload worker:
+
+```bash
+pnpm run dev:worker
+```
+
+#### Start the app:
+
+```bash
+pnpm run dev
+```
+
+## Deployment on Vercel
+
+1. Push your code to GitHub
+2. Go to [Vercel](https://vercel.com/)
+3. Import the repository
+4. Set up environment variables:
+   * `BLOB_READ_WRITE_TOKEN`
+   * `OPENAI_API_KEY`
+   * `QDRANT_URL` (use a remote instance for production)
+
+## Disclaimer
+
+Currently, chat sessions are stored **in-memory** using a simple JavaScript `Map`. This approach is not suitable for production use. Please replace it with a persistent database like PostgreSQL, Supabase, or Redis for storing chat history securely and reliably.
+
+---
+
+For questions, suggestions, or contributions — feel free to open an issue or PR on [cybertron15/gen-ai-projects](https://github.com/cybertron15/gen-ai-projects).
