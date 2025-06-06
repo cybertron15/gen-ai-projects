@@ -2,9 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config()
 import { Worker } from 'bullmq';
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
-import { CharacterTextSplitter, RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
-import { OpenAIEmbeddings } from "@langchain/openai";
-import { QdrantVectorStore } from "@langchain/qdrant";
+import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { getVectorStore } from './lib/vectorDB';
 
 // Throttling config (e.g., 1 request per 2 seconds)
@@ -96,11 +94,9 @@ const worker = new Worker('files', async job => {
             
             console.log('docs', docs);
 
-            // - Splitting the document into chunks (loader.load() already does this but Im doing it again to show how to do it)
-            // const textSplitter = await new CharacterTextSplitter({ chunkSize: 30, chunkOverlap: 0 });
 
             const textSplitter = new RecursiveCharacterTextSplitter({
-                chunkSize: 100,
+                chunkSize: 1000,
                 chunkOverlap: 0,
             });
 

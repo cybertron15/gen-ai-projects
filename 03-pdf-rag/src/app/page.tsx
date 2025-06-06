@@ -1,10 +1,9 @@
 "use client"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, FormEvent } from "react"
 import type React from "react"
-import { useChat } from "@ai-sdk/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Upload, Send, FileText, Bot, User, X, Check, Trash } from "lucide-react"
+import { Upload, Send, FileText, Bot, User, X, Check, Trash, LoaderCircle } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {
@@ -18,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
 import { UploadResponse } from "@/types"
+import { HumanMessage, BaseMessage } from "@langchain/core/messages";
 
 interface UploadedFile {
 	selected: boolean
@@ -28,11 +28,18 @@ interface UploadedFile {
 	downloadUrl: string
 }
 
+interface ChatMessage {
+	role: "user" | "ai";
+	content: string;
+}
+
 export default function PDFChat() {
 	const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
 	const [fileDialogOpen, setFileDialogOpen] = useState(false)
+	const [userQuery, setuserQuery] = useState("")
+	const [isLoading, setisLoading] = useState(false)
+	const [messages, setmessages] = useState<ChatMessage[]>([])
 	const fileInputRef = useRef<HTMLInputElement>(null)
-	const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat()
 
 	const getFiles = () => {
 		fetch("/api/files")
@@ -52,13 +59,56 @@ export default function PDFChat() {
 					}))
 
 				setUploadedFiles(files);
+
 			})
 	}
 
 	useEffect(() => {
 		getFiles()
-	}, [])
 
+	}, [])
+	const chat = async (e: FormEvent) => {
+		e.preventDefault();
+		let filter;
+		const selectedFiles = uploadedFiles.filter((file) => file.selected);
+
+		if (selectedFiles.length > 0) {
+			filter = {
+				should: selectedFiles.map((file) => ({
+					key: "metadata.source",
+					match: { value: file.url },
+				})),
+			};
+		} else {
+			filter = {};
+		}
+
+		const sessionId = localStorage.getItem("chat-session-id") || crypto.randomUUID();
+		localStorage.setItem("chat-session-id", sessionId);
+		setmessages(prev => [...prev, { role: "user", content: userQuery }]);
+		setisLoading(true);
+		setuserQuery("");
+		try {
+			const res = await fetch("/api/chat", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					sessionId,
+					query: userQuery,
+					filter
+				}),
+			});
+
+			const data = await res.json();
+			setmessages(prev => [...prev, { role: "ai", content: data.response }]);
+		} catch (err) {
+			console.error("Error sending chat", err);
+		} finally {
+			setisLoading(false);
+		}
+	};
 
 	const isFileOversized = (files: File[]) => {
 		const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
@@ -180,8 +230,8 @@ export default function PDFChat() {
 						</div>
 					) : (
 						<div className="space-y-4">
-							{messages.map((message) => (
-								<div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+							{messages.map((message, index) => (
+								<div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
 									<div
 										className={`max-w-[80%] p-3 rounded-lg ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
 											}`}
@@ -196,12 +246,17 @@ export default function PDFChat() {
 									</div>
 								</div>
 							))}
+							{isLoading && (
+								<div className="flex justify-start items-center p-4">
+									<LoaderCircle className="animate-spin rounded-full h-6 w-6"/>
+								</div>
+							)}
 						</div>
 					)}
 				</CardContent>
 
 				<CardFooter className="border-t p-4">
-					<form className="w-full space-y-2">
+					<div className="w-full space-y-2">
 						{/* File selector dialog */}
 						<Dialog open={fileDialogOpen} onOpenChange={setFileDialogOpen}>
 							<DialogContent className="sm:max-w-md">
@@ -323,28 +378,30 @@ export default function PDFChat() {
 									multiple
 								/>
 							</div>
+							<form onSubmit={chat} className="flex items-center flex-1 gap-2">
+								<Input
+									value={userQuery}
+									onChange={(e) => setuserQuery(e.target.value)}
+									placeholder={uploadedFiles.length > 0 ? "Ask a question about the PDFs..." : "Upload PDFs first..."}
+									className=" resize-none "
+								// disabled={uploadedFiles.length === 0 || uploadedFiles.filter((f) => f.selected).length === 0}
+								/>
 
-							<Input
-								value={input}
-								onChange={handleInputChange}
-								placeholder={uploadedFiles.length > 0 ? "Ask a question about the PDFs..." : "Upload PDFs first..."}
-								className=" resize-none "
-							// disabled={uploadedFiles.length === 0 || uploadedFiles.filter((f) => f.selected).length === 0}
-							/>
+								<Button
+									type="submit"
+									size="icon"
+									disabled={
+										isLoading ||
+										uploadedFiles.length === 0 ||
+										uploadedFiles.filter((f) => f.selected).length === 0 ||
+										!userQuery.trim()
+									}
+									className="shrink-0 cursor-pointer"
 
-							<Button
-								type="submit"
-								size="icon"
-								disabled={
-									isLoading ||
-									uploadedFiles.length === 0 ||
-									uploadedFiles.filter((f) => f.selected).length === 0 ||
-									!input.trim()
-								}
-								className="shrink-0 cursor-pointer"
-							>
-								<Send size={18} />
-							</Button>
+								>
+									<Send size={18} />
+								</Button>
+							</form>
 						</div>
 
 						{/* Show file count summary */}
@@ -358,7 +415,7 @@ export default function PDFChat() {
 								</span>
 							</div>
 						)}
-					</form>
+					</div>
 				</CardFooter>
 			</Card >
 		</div >
